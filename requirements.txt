@@ -1,0 +1,29 @@
+langchain
+langchain-core
+langchain-community
+langchain-anthropic
+langchain-openai
+langchain-huggingface
+langgraph
+chromadb
+sentence-transformers
+streamlit
+python-dotenv
+feedparser
+apscheduler
+requests
+pandas
+pytesseract
+Pillow
+redis
+networkx
+neo4j
+datasets  # scripts/evaluate_phrasebank.py 加载 HuggingFace 数据集用
+akshare  # P8 行情数据源，可选：未安装/取不到数据时自动降级为mock演示数据，不影响其他功能
+pdfplumber  # P10 公告PDF全文抽取，可选：未安装时公告采集自动降级为仅用标题，不影响其他功能
+fastapi  # 对外REST API接口层
+uvicorn[standard]  # 运行FastAPI应用的ASGI服务器
+openpyxl  # P13 日报导出Excel
+reportlab  # P13 日报导出PDF
+jieba  # FTS5中文分词（可选：未安装时关键词检索自动降级为二元组分词，召回略降但可用）
+faster-whisper  # 视频ASR语音转写（可选：未安装/模型加载失败时语音内容为空，关键帧OCR与主流程不受影响）

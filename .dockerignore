@@ -1,0 +1,45 @@
+# ---------- 构建上下文排除项 ----------
+# 原则：镜像里只有代码和依赖清单，密钥、数据、模型全部运行时挂载
+
+# 密钥与本地配置（绝不打进镜像）
+.env
+.env.local
+
+# 虚拟环境与 Python 缓存
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# 运行时数据与产物（compose 用 volume 挂载宿主机目录）
+data/
+api/data/
+backups/
+reports/
+**/*.db
+**/*.db-wal
+**/*.db-shm
+**/*.sqlite3
+**/*.bin
+
+# 版本控制与 IDE
+.git/
+.gitignore
+.idea/
+.vscode/
+.workbuddy/
+
+# 文档与部署文件本身
+README.md
+面试项目介绍.md
+面试项目解析.md
+项目测试指标报告.md
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# 系统
+.DS_Store
+Thumbs.db
+*.log

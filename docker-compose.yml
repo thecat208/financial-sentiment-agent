@@ -1,0 +1,40 @@
+# ---------- 金融舆情分析系统 部署编排 ----------
+# 启动：docker compose up -d --build
+# 查看日志：docker compose logs -f api
+# 停止：docker compose down
+#
+# API:    http://localhost:8000/docs
+# 界面:   http://localhost:8501
+
+x-common: &common
+  env_file: .env
+  environment:
+    # 容器内路径覆盖 .env 里的 Windows 本地模型路径（compose 的 environment 优先级高于 env_file）
+    LOCAL_EMBEDDING_MODEL: /models/bge-large-zh-v1.5
+    CHROMA_PERSIST_DIR: /app/data/chroma_db
+  volumes:
+    # 运行时数据持久化：SQLite 主库、Chroma 向量库、日报产物全部落在宿主机
+    - ./data:/app/data
+    - ./reports:/app/reports
+    # 本地 embedding 模型只读挂载，避免容器内联网下载（路径不对时改成你自己的模型目录）
+    - D:/test_model/bge-large-zh-v1.5:/models/bge-large-zh-v1.5:ro
+  restart: unless-stopped
+
+services:
+  api:
+    <<: *common
+    build: .
+    image: financial-sentiment-agent:latest
+    container_name: sentiment-api
+    ports:
+      - "8000:8000"
+
+  streamlit:
+    <<: *common
+    image: financial-sentiment-agent:latest
+    container_name: sentiment-ui
+    command: streamlit run app/streamlit_app.py --server.address 0.0.0.0 --server.port 8501
+    ports:
+      - "8501:8501"
+    depends_on:
+      - api

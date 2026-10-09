@@ -1,0 +1,10 @@
+# Streamlit 全局主题：深色金融风，浏览器深/浅模式一致
+[theme]
+base = "dark"
+primaryColor = "#F43F5E"
+backgroundColor = "#0D1017"
+secondaryBackgroundColor = "#151A26"
+textColor = "#E6EAF2"
+
+[server]
+address = "0.0.0.0"
