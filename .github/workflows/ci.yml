@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  syntax:
+    name: 语法检查（全量编译）
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: py_compile 所有已跟踪的 .py 文件
+        run: |
+          files=$(git ls-files '*.py')
+          echo "待编译文件数: $(echo "$files" | wc -l)"
+          echo "$files" | xargs python -m py_compile
+          echo "全部编译通过"
+
+  tests:
+    name: 核心测试（无需 API Key）
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      # 先装 CPU 版 torch，避免 requirements 间接拉取数 GB 的 CUDA 版
+      - name: 安装 CPU 版 torch
+        run: pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: 安装项目依赖
+        run: pip install -r requirements.txt
+      # 数据库并发补丁验收（tempfile 自建库，不依赖本地数据，CI 安全）
+      - name: 数据库并发验收
+        run: python scripts/test_db_concurrency.py
